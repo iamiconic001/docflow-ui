@@ -9,6 +9,9 @@ const DOC_TYPE_OPTIONS = [
   "LEGAL_CONTRACT",
   "TAX_DOCUMENT",
   "OTHER",
+  "TEST_FAIL",
+  "TEST_INVALID",
+  "TEST_SUCCESS",
 ];
 
 export default function Upload() {
