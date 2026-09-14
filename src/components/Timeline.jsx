@@ -12,6 +12,46 @@ const STATUS_ICONS = {
   FAILED: "✕",
 };
 
+const STATUS_LABELS = {
+  UPLOADED: "Uploaded",
+  PROCESSING: "Processing",
+  PROCESSED: "Processed",
+  FAILED: "Failed",
+};
+
+const REASON_MESSAGES = {
+  PROCESSOR_TIMEOUT: "Processor timed out",
+  MAX_RETRIES_EXCEEDED: "Maximum retries exceeded — processing failed",
+  PROCESSOR_ERROR: "Processor encountered an error",
+  INVALID_RESULT: "Invalid data returned by processor",
+  VALIDATION_FAILED: "Extracted data failed validation",
+};
+
+const MAX_ATTEMPTS = 3;
+
+function formatReason(reason) {
+  return REASON_MESSAGES[reason] || reason;
+}
+
+function formatStatus(status) {
+  return STATUS_LABELS[status] || status;
+}
+
+function formatAttempt(attemptNumber) {
+  return `Attempt ${attemptNumber} of ${MAX_ATTEMPTS}`;
+}
+
+function formatTimestamp(timestamp) {
+  return new Date(timestamp).toLocaleString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
 export default function Timeline({ history }) {
   if (!history || history.length === 0) {
     return <p className="empty-hint">No processing history available.</p>;
@@ -30,21 +70,21 @@ export default function Timeline({ history }) {
             <div className="timeline-content">
               <div className="timeline-header">
                 <span className="timeline-status" style={{ color }}>
-                  {entry.status}
+                  {formatStatus(entry.status)}
                 </span>
-                {entry.timestamp && (
-                  <span className="timeline-time">
-                    {new Date(entry.timestamp).toLocaleString()}
-                  </span>
-                )}
               </div>
               {entry.attemptNumber != null && (
                 <div className="timeline-meta">
-                  Attempt #{entry.attemptNumber}
+                  {formatAttempt(entry.attemptNumber)}
                 </div>
               )}
               {entry.reason && (
-                <div className="timeline-reason">{entry.reason}</div>
+                <div className="timeline-reason">{formatReason(entry.reason)}</div>
+              )}
+              {entry.timestamp && (
+                <div className="timeline-time">
+                  {formatTimestamp(entry.timestamp)}
+                </div>
               )}
             </div>
           </li>
